@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>ImaGen WebUI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>ImaGen WebUI</h1>
+        <form id="generate-form">
+            <label>Prompt Positivo:</label>
+            <input type="text" name="prompt" required>
+
+            <label>Prompt Negativo:</label>
+            <input type="text" name="negative_prompt">
+
+            <label>Largura:</label>
+            <input type="number" name="width" value="512">
+
+            <label>Altura:</label>
+            <input type="number" name="height" value="512">
+
+            <label>Modelo:</label>
+            <select name="model_name" id="model-select"></select>
+
+            <button type="submit">Gerar Imagem</button>
+        </form>
+
+        <div id="result">
+            <h2>Resultado:</h2>
+            <img id="generated-image" src="" alt="Imagem gerada" style="display:none;">
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("generate-form");
+        const image = document.getElementById("generated-image");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+
+            const response = await fetch("http://127.0.0.1:8000/generate", {
+                method: "POST",
+                body: formData
+            });
+
+            const blob = await response.blob();
+            const imageURL = URL.createObjectURL(blob);
+            image.src = imageURL;
+            image.style.display = "block";
+        });
+
+        async function loadModels() {
+    const response = await fetch("http://127.0.0.1:8000/models");
+    const data = await response.json();
+    const select = document.getElementById("model-select");
+    data.models.forEach(model => {
+        const option = document.createElement("option");
+        option.value = model;
+        option.textContent = model;
+        select.appendChild(option);
+    });
+}
+
+loadModels();
+
+    </script>
+</body>
+</html>
