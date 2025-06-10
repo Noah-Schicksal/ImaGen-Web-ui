@@ -1,0 +1,10 @@
+torch
+torchvision
+torchaudio
+diffusers
+transformers
+fastapi
+uvicorn
+pillow
+accelerate
+pip install python-multipart
